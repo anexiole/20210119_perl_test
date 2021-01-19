@@ -34,7 +34,11 @@ Examples:
 TESTS
 =====
 
-run " prove -v t/report.t"
+Script: t/report.t
+
+To run test:
+
+   run " prove -v t/report.t"
 
 Example: $ prove -v t/report.t 
 t/report.t .. 
