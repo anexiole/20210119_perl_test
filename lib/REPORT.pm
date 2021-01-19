@@ -144,6 +144,8 @@ sub _update_summary_data
 	return;
 }
 
+# Pass it an array which has hashref of parsed data
+# It will find the unique sets of product and customers, and get its totals
 sub get_summary_data
 {
 	my (@parsed_data) = @_;
@@ -167,5 +169,11 @@ return %summary_data;
 
 }
 
+#TODO
+sub generate_csv_report
+{
+
+
+}
 
 1;

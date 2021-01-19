@@ -54,6 +54,7 @@ while (<$fh>)
 }
 undef $fh;
 
+
 my %summary_data = REPORT::get_summary_data(@parsed_data);
 
 REPORT::generate_csv_report($output_file_name);
