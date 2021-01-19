@@ -7,6 +7,7 @@ use REPORT;
 
 use Getopt::Long;
 use IO::File;
+use Data::Dumper;
 
 my $help = undef;
 my $input_file = undef;
@@ -29,11 +30,15 @@ unless (defined $fh) {
 
 my %summary_data = ();
 my @parsed_data = ();
+# parse all data in each of the input line to recognisable
+# elements. The identifies the unique sets of client and product
+# information
 while (<$fh>)
 {
     my %elements = REPORT::identify_transaction_elements($_);
     push @parsed_data, \%elements;
 }
+
 foreach my $parsed_data_element (@parsed_data)
 {
     REPORT::_update_summary_data(

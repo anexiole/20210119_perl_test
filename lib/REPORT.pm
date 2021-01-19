@@ -88,7 +88,7 @@ sub identify_transaction_elements
 			last ELEMENT_NAME;
 		}
 	}
-#print qq{RAW - } . Dumper(\%data)
+
 	return %data;
 }
 
@@ -117,41 +117,31 @@ sub _get_product_information
 sub _get_total_transaction_amount
 {
 	my ($data) = @_;
+	print STDERR qq{ _get_total_transaction_amount : } . ($data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0);
 	return $data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0;
 }
-
-
-#    REPORT::_update_summary_data(
-#        'summary' => $summary_data,
-#        'elements' => \%elements,
-#    );
 
 sub _update_summary_data
 {
 	my ($args) = @_;
 
-
-	print STDERR qq{ The ARGS I got are : }. Dumper($args);
-
 	my $client_information = _get_client_information($args->{'elements'});
 	my $product_information = _get_product_information($args->{'elements'});
 
-	print STDERR qq{ CURRENT CLIENT $client_information\nproduct_information:$product_information\n};
-	#my $total_transaction_amount = _get_total_transaction_amount($data);
 	my $total = _get_total_transaction_amount($args->{'elements'});
+		print STDERR qq{ CURRENT CLIENT $client_information\nproduct_information:$product_information TOTAL: $total\n};
 	
 	if (defined($args->{'summary'}->{$client_information}->{$product_information}))
 	{
+		print STDERR qq{ \t--> UPDATING the count from } . $args->{'summary'}->{$client_information}->{$product_information} . qq{\n};
 		$args->{'summary'}->{$client_information}->{$product_information} += $total;
 	}
 	else{
+		print STDERR qq{ \t--> INITIALISATING the count from ZERO }  . qq{\n};
 		$args->{'summary'}->{$client_information}->{$product_information} = $total;
 	}
 
-	#return join q{||}, (
-	#	$client_information,
-	#	$product_information,
-	#);
+	return;
 }
 
 1;
