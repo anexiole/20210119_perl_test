@@ -1,5 +1,7 @@
 package REPORT;
 
+# WRITTEN BY GORDON YEONG
+
 use strict;
 use warnings;
 
@@ -182,6 +184,7 @@ sub write_csv_report {
 REPORT
 
 
+
 =head1 DESCRIPTION
 
 Does the heavy lifting of generating a daily summary report for ABN AMRO BANK.
@@ -191,6 +194,8 @@ CONFIGURATIONS - for the purpose of simplicity in this technical test,
 I have opted to keep everything in the package
 but in the real world, some organisations will opt for a yaml config (which
 can be done easily)
+
+Written by GORDON YEONG
 
 
 =head1 REQUIRES

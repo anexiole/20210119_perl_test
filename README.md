@@ -57,3 +57,10 @@ Files=1, Tests=8,  0 wallclock secs ( 0.02 usr  0.00 sys +  0.05 cusr  0.00 csys
 Result: PASS
 [19:36:09] Perl Test git:(main*) $ 
 
+
+
+
+MORE INFORMATION:
+=================
+
+Please run "perlpod lib/REPORT.PM"
