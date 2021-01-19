@@ -15,40 +15,40 @@ Readonly my $max_input_characters_per_line => 302;
 # Assumption: There must only be one slice per hashref
 
 Readonly::Array my @input_element_placements => (
-    { 'RECORD CODE'              => 3, },
-    { 'CLIENT TYPE'              => 4, },
-    { 'CLIENT NUMBER'            => 4, },
-    { 'ACCOUNT NUMBER'           => 4, },
-    { 'SUBACCOUNT NUMBER'        => 4, },
-    { 'OPPOSITE PARTY CODE'      => 6, },
-    { 'PRODUCT GROUP CODE'       => 2, },
-    { 'EXCHANGE CODE'            => 4, },
+    { 'RECORD_CODE'              => 3, },
+    { 'CLIENT_TYPE'              => 4, },
+    { 'CLIENT_NUMBER'            => 4, },
+    { 'ACCOUNT_NUMBER'           => 4, },
+    { 'SUBACCOUNT_NUMBER'        => 4, },
+    { 'OPPOSITE_PARTY_CODE'      => 6, },
+    { 'PRODUCT_GROUP_CODE'       => 2, },
+    { 'EXCHANGE_CODE'            => 4, },
     { 'SYMBOL'                   => 6, },
-    { 'EXPIRATION DATE'          => 8, },
-    { 'CURRENCY CODE'            => 3, },
-    { 'MOVEMENT CODE'            => 2, },
-    { 'BUY SELL CODE'            => 1, },
-    { 'QUANTITY LONG SIGN'       => 1, },
-    { 'QUANTITY LONG'            => 10, },
-    { 'QUANTITY SHORT SIGN'      => 1, },
-    { 'QUANTITY SHORT'           => 10, },
-    { 'EXCH/BROKER FEE / DEC'    => 12, },
-    { 'EXCH/BROKER FEE DC'       => 1, },
-    { 'EXCH/BROKER FEE CUR CODE' => 3, },
-    { 'CLEARING FEE / DEC'       => 12, },
-    { 'CLEARING FEE D C'         => 1, },
-    { 'CLEARING FEE CUR CODE'    => 3, },
+    { 'EXPIRATION_DATE'          => 8, },
+    { 'CURRENCY_CODE'            => 3, },
+    { 'MOVEMENT_CODE'            => 2, },
+    { 'BUY_SELL_CODE'            => 1, },
+    { 'QUANTITY_LONG_SIGN'       => 1, },
+    { 'QUANTITY_LONG'            => 10, },
+    { 'QUANTITY_SHORT_SIGN'      => 1, },
+    { 'QUANTITY_SHORT'           => 10, },
+    { 'EXCH/BROKER_FEE/DEC'    => 12, },
+    { 'EXCH/BROKER_FEE_DC'       => 1, }, 
+    { 'EXCH/BROKER_FEE_CUR_CODE' => 3, },
+    { 'CLEARING_FEE/DEC'       => 12, },
+    { 'CLEARING_FEE_D_C'         => 1, },
+    { 'CLEARING_FEE_CUR_CODE'    => 3, },
     { 'COMMISSION'               => 12, },
-    { 'COMMISSION D C'           => 1, },
-    { 'COMMISSION CUR CODE'      => 3, },
-    { 'TRANSACTION DATE'         => 8, },
-    { 'FUTURE REFERENCE'         => 6, },
-    { 'TICKET NUMBER'            => 6, },
-    { 'EXTERNAL NUMBER'          => 6, },
-    { 'TRANSACTION PRICE  / DEC' => 15, },
-    { 'TRADER INITIALS'          => 6, },
-    { 'OPPOSITE TRADER ID'       => 7, },
-    { 'OPEN CLOSE CODE'          => 1, },
+    { 'COMMISSION_D_C'           => 1, },
+    { 'COMMISSION_CUR_CODE'      => 3, },
+    { 'TRANSACTION_DATE'         => 8, },
+    { 'FUTURE_REFERENCE'         => 6, },
+    { 'TICKET_NUMBER'            => 6, },
+    { 'EXTERNAL_NUMBER'          => 6, },
+    { 'TRANSACTION_PRICE/DEC'    => 15, },
+    { 'TRADER_INITIALS'          => 6, },
+    { 'OPPOSITE_TRADER_ID'       => 7, },
+    { 'OPEN_CLOSE_CODE'          => 1, },
 #    { 'FILLER'                   => 127, },
 );
 
@@ -83,21 +83,16 @@ sub identify_transaction_elements
 sub _get_client_information{
 	my ($data) = @_;
 	return join q{,}, (
-		$data->{'CLIENT TYPE'},
-		$data->{'CLIENT NUMBER'},
-		$data->{'ACCOUNT NUMBER'},
-		$data->{'SUBACCOUNT NUMBER'},
+		$data->{'CLIENT_TYPE'},
+		$data->{'CLIENT_NUMBER'},
+		$data->{'ACCOUNT_NUMBER'},
+		$data->{'SUBACCOUNT_NUMBER'},
 	);
 }
 
 sub _get_product_information{
 	my ($data) = @_;
-	return join q{,}, (
-		$data->{''},
-		$data->{'CLIENT NUMBER'},
-		$data->{'ACCOUNT NUMBER'},
-		$data->{'SUBACCOUNT NUMBER'},
-	);
+
 }
 
 sub generate_report_content_line
@@ -105,7 +100,7 @@ sub generate_report_content_line
 	my ($data) = @_;
 
 	my $client_information = _get_client_information($data);
-	my $product_information
+	my $product_information = _get_product_information($data);
 
 	return (
 
