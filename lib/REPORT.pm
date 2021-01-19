@@ -5,7 +5,6 @@ use warnings;
 
 use Readonly;
 use IO::File;
-use Data::Dumper;
 
 # CONFIGURATIONS - for this test, I have opted to keep everything in the package
 # but in the real world, some organisations will opt for a yaml config (which
@@ -176,3 +175,56 @@ sub write_csv_report {
 }
 
 1;
+
+
+=head1 NAME
+
+REPORT
+
+
+=head1 DESCRIPTION
+
+Does the heavy lifting of generating a daily summary report for ABN AMRO BANK.
+
+
+CONFIGURATIONS - for the purpose of simplicity in this technical test,
+I have opted to keep everything in the package
+but in the real world, some organisations will opt for a yaml config (which
+can be done easily)
+
+
+=head1 REQUIRES
+
+
+L<IO::File> 
+
+L<Readonly> 
+
+
+=head1 METHODS
+
+=head2 get_summary_data
+
+ get_summary_data();
+
+Pass it an array which has hashref of parsed data
+It will find the unique sets of product and customers, and get its totals
+
+
+=head2 identify_transaction_elements
+
+ identify_transaction_elements();
+
+methods
+
+
+=head2 write_csv_report
+
+ write_csv_report();
+
+Given a file name and a hashref of data, it will generate a csv file
+
+
+
+=cut
+
