@@ -28,7 +28,7 @@ unless (defined $fh) {
     die qq{Cannot open file, $input_file: $!};
 }
 
-my %summary_data = ();
+
 my @parsed_data = ();
 # parse all data in each of the input line to recognisable
 # elements. The identifies the unique sets of client and product
@@ -39,15 +39,8 @@ while (<$fh>)
     push @parsed_data, \%elements;
 }
 
-foreach my $parsed_data_element (@parsed_data)
-{
-    REPORT::_update_summary_data(
-        {
-            'summary' => \%summary_data,
-            'elements' => $parsed_data_element,
-        }
-    );
-}
+my %summary_data = REPORT::get_summary_data(@parsed_data);
+
 
 use Data::Dumper;
 print qq{ Summary is } . Dumper(\%summary_data);

@@ -144,4 +144,28 @@ sub _update_summary_data
 	return;
 }
 
+sub get_summary_data
+{
+	my (@parsed_data) = @_;
+	my %summary_data = ();
+foreach my $parsed_data_element (@parsed_data)
+{
+	my $client_information = _get_client_information($parsed_data_element);
+	my $product_information = _get_product_information($parsed_data_element);
+my $total = _get_total_transaction_amount($parsed_data_element);
+	if (defined($summary_data{$client_information}->{$product_information}))
+	{
+		print STDERR qq{ \t--> MUTTLEY - UPDATING the count for client, $client_information and product, $product_information from } . $summary_data{$client_information}->{$product_information} . qq{\n};
+		$summary_data{$client_information}->{$product_information} += $total;
+	}
+	else{
+		print STDERR qq{ \t--> MUTTLEY -  INITIALISATING the count for client $client_information and product, $product_information  from ZERO with total of ($total) }  . $parsed_data_element->{'QUANTITY_LONG'}  . " , SHORT =". $parsed_data_element->{'QUANTITY_SHORT'}. qq{\n};
+		$summary_data{$client_information}->{$product_information} = $total;
+	}
+}
+return %summary_data;
+
+}
+
+
 1;
