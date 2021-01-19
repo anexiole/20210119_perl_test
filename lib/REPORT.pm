@@ -157,15 +157,27 @@ sub write_csv_report {
 
     my $fh = IO::File->new( $args->{'file'}, $file_write_mode );
     if ( defined $fh ) {
+        my $header_string = join q{,}, (
+             q{Client_Information},
+             q{Product_Information},
+             q{Total_Transaction_Amount},
+        );
+        print $fh $header_string . qq{\n};
+
+        # Given the data is pretty straightforward(i.e. does not have
+        # commas in them, i decided not to escape the contents).
+        # 'Less is more'
+
         my $data = $args->{'data'};
         foreach my $customer ( keys %{$data} ) {
             foreach my $product ( keys %{ $data->{$customer} } ) {
                 my $data_string = join q{,},
                     (
-                    $customer, $product, $data->{$customer}->{$product},
-                    qq{\n}
+                        $customer,
+                        $product,
+                        $data->{$customer}->{$product},
                     );
-                print $fh $data_string;
+                print $fh $data_string . qq{\n};
             }
         }
         undef $fh;

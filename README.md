@@ -1,5 +1,5 @@
 # 20210119_perl_test
-# SUBMITTED BY GORDON YEONG
+# SUBMITTED BY GORDON YEONG anexiole@gmail.com
 
 APPLICATION:
 ============
@@ -13,14 +13,14 @@ Configuration:
 
 Execution:
     To run the application, you can optionally provide a '--input_file' flag. Else, by default it will
-    just use a file called Input.csv in its current path.
+    just use a file called Input.txt in its current path.
     
     PRE: run "chmod 755 generate_daily_summary_report.pl" to set the permissions up
     
     
     To run it:
     
-     The command is "././generate_daily_summary_report.pl --input_file <input file other than input.csv>"
+     The command is "././generate_daily_summary_report.pl --input_file <input file other than Input.txt>"
     
     
 Examples:

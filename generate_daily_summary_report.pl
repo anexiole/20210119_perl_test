@@ -18,20 +18,13 @@ GetOptions(
 ) or die(qq{Error in command line arguments\n});
 
 my %file = (
-    'input'  => q{input.csv},
+    'input'  => q{Input.txt},
     'output' => q{output.csv},
 );
 
 if (defined($input_file))
 {
     $file{'input'} = $input_file;
-}
-else{
-    print q{No input file supplied to daily summary report generator. Will use}
-    . qq{ the default file, }
-    . $file{'input'}
-    . qq{\n}
-    ;
 }
 
 my $fh = IO::File->new($file{'input'}, q{r});
