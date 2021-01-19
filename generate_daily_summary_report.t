@@ -56,9 +56,8 @@ use Test::More;
 		q{Elements parsed as expected from raw transaction line}
 	);
 
-	can_ok('REPORT', q{generate_report_content_line});
-	my $r = REPORT::generate_report_content_line(\%elements);
-	print $r;
+	can_ok('REPORT', q{_update_summary_data});
+
 }
 
 done_testing();

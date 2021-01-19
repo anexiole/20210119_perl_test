@@ -22,14 +22,33 @@ unless (defined($input_file))
 }
 
 my $fh = IO::File->new($input_file, q{r});
+
 unless (defined $fh) {
     die qq{Cannot open file, $input_file: $!};
 }
 
-    while (<$fh>)
+my %summary_data = ();
+my @parsed_data = ();
+while (<$fh>)
 {
-    print "File" . $_ . "\n";
+    my %elements = REPORT::identify_transaction_elements($_);
+    push @parsed_data, \%elements;
 }
+foreach my $parsed_data_element (@parsed_data)
+{
+    REPORT::_update_summary_data(
+        {
+            'summary' => \%summary_data,
+            'elements' => $parsed_data_element,
+        }
+    );
+}
+
+use Data::Dumper;
+print qq{ Summary is } . Dumper(\%summary_data);
+ #   my @report_rows = REPORT::generate_report_contents(\%elements);
+#	print qq{REPORT: } . Dumper(@report_rows) . qq{\n};
+
 
 
     undef $fh;

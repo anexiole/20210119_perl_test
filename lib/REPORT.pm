@@ -58,6 +58,16 @@ Readonly::Array my @input_element_placements => (
 sub identify_transaction_elements
 {
 	my ($transaction_line) = @_;
+	my $transaction_line_has_valid_data = (
+		(defined($transaction_line))
+		and ($transaction_line =~ m{\w})
+	);
+
+	unless ($transaction_line_has_valid_data)
+	{
+		return;
+	}
+
 	my @raw_data = split qr{}, $transaction_line, $max_input_characters_per_line;
 
     # Sanitise the data. We don't want trailing spaces at the end of
@@ -78,7 +88,7 @@ sub identify_transaction_elements
 			last ELEMENT_NAME;
 		}
 	}
-
+#print qq{RAW - } . Dumper(\%data)
 	return %data;
 }
 
@@ -107,26 +117,41 @@ sub _get_product_information
 sub _get_total_transaction_amount
 {
 	my ($data) = @_;
-	return join q{,}, (
-		$data->{'EXCHANGE_CODE'},
-		$data->{'PRODUCT_GROUP_CODE'},
-		$data->{'SYMBOL'},
-		$data->{'EXPIRATION_DATE'},
-	);	
+	return $data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0;
 }
 
-sub generate_report_content_line
+
+#    REPORT::_update_summary_data(
+#        'summary' => $summary_data,
+#        'elements' => \%elements,
+#    );
+
+sub _update_summary_data
 {
-	my ($data) = @_;
+	my ($args) = @_;
 
-	my $client_information = _get_client_information($data);
-	my $product_information = _get_product_information($data);
+
+	print STDERR qq{ The ARGS I got are : }. Dumper($args);
+
+	my $client_information = _get_client_information($args->{'elements'});
+	my $product_information = _get_product_information($args->{'elements'});
+
+	print STDERR qq{ CURRENT CLIENT $client_information\nproduct_information:$product_information\n};
 	#my $total_transaction_amount = _get_total_transaction_amount($data);
+	my $total = _get_total_transaction_amount($args->{'elements'});
+	
+	if (defined($args->{'summary'}->{$client_information}->{$product_information}))
+	{
+		$args->{'summary'}->{$client_information}->{$product_information} += $total;
+	}
+	else{
+		$args->{'summary'}->{$client_information}->{$product_information} = $total;
+	}
 
-	return join q{,}, (
-		#$client_information,
-		$product_information,
-	);
+	#return join q{||}, (
+	#	$client_information,
+	#	$product_information,
+	#);
 }
 
 1;
