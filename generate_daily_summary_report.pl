@@ -11,6 +11,7 @@ use Data::Dumper;
 
 my $help = undef;
 my $input_file = undef;
+
 GetOptions(
     'input_file=s' => \$input_file,
     'help'         => \$help
@@ -44,19 +45,21 @@ eval {
     # elements. The identifies the unique sets of client and product
     # information
     my @parsed_data = ();
-    
+
     while (<$fh>) {
         my %elements = REPORT::identify_transaction_elements($_);
         push @parsed_data, \%elements;
     }
     undef $fh;
 
+    # get the daily summary contents
     my %summary_data = REPORT::get_summary_data(@parsed_data);
 
-    REPORT::write_csv_report({
-        'file' => $file{'output'},
-        'data' => \%summary_data,
-    }
+    # write out the contents to the filesystem
+    REPORT::write_csv_report(
+        {   'file' => $file{'output'},
+            'data' => \%summary_data,
+        }
     );
 };
 if ($@) {

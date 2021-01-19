@@ -11,7 +11,7 @@ use Data::Dumper;
 # but in the real world, some organisations will opt for a yaml config (which
 # can be done easily)
 
-Readonly my $max_input_characters_per_line => 302; 
+Readonly my $max_input_characters_per_line => 302;
 
 # configuration for input elements in the input file.
 # the value of the hash ref represents the length of the element's string
@@ -36,7 +36,7 @@ Readonly::Array my @input_element_placements => (
     { 'QUANTITY_SHORT_SIGN'      => 1, },
     { 'QUANTITY_SHORT'           => 10, },
     { 'EXCH/BROKER_FEE/DEC'    => 12, },
-    { 'EXCH/BROKER_FEE_DC'       => 1, }, 
+    { 'EXCH/BROKER_FEE_DC'       => 1, },
     { 'EXCH/BROKER_FEE_CUR_CODE' => 3, },
     { 'CLEARING_FEE/DEC'       => 12, },
     { 'CLEARING_FEE_D_C'         => 1, },
@@ -58,122 +58,121 @@ Readonly::Array my @input_element_placements => (
 # methods
 sub identify_transaction_elements
 {
-	my ($transaction_line) = @_;
-	my $transaction_line_has_valid_data = (
-		(defined($transaction_line))
-		and ($transaction_line =~ m{\w})
-	);
+    my ($transaction_line) = @_;
+    my $transaction_line_has_valid_data = (
+        (defined($transaction_line))
+        and ($transaction_line =~ m{\w})
+    );
 
-	unless ($transaction_line_has_valid_data)
-	{
-		return;
-	}
+    unless ($transaction_line_has_valid_data)
+    {
+        return;
+    }
 
-	my @raw_data = split qr{}, $transaction_line, $max_input_characters_per_line;
+    my @raw_data = split qr{}, $transaction_line, $max_input_characters_per_line;
 
     # Sanitise the data. We don't want trailing spaces at the end of
     # data. For example, 'SGXDC ' will be 'SGXDC' which is much
     # neater for reporting/display purposes.
-	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{ } } @raw_data;
+    @raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{ } } @raw_data;
 
-	my %data = ();
-	my $index = 0;
-	foreach my $element_config (@input_element_placements)
-	{
-		ELEMENT_NAME: foreach my $element_name (keys %{$element_config})
-		{
-			my $ending_index = $index + $element_config->{$element_name} - 1;
-			$data{ $element_name } = join q{}, @raw_data[ $index .. $ending_index];
+    my %data = ();
+    my $index = 0;
+    foreach my $element_config (@input_element_placements)
+    {
+        ELEMENT_NAME: foreach my $element_name (keys %{$element_config})
+        {
+            my $ending_index = $index + $element_config->{$element_name} - 1;
+            $data{ $element_name } = join q{}, @raw_data[ $index .. $ending_index];
 
-			$index = $ending_index+1;
-			last ELEMENT_NAME;
-		}
-	}
+            $index = $ending_index+1;
+            last ELEMENT_NAME;
+        }
+    }
 
-	return %data;
+    return %data;
 }
 
 sub _get_client_information
 {
-	my ($data) = @_;
-	return join q{,}, (
-		$data->{'CLIENT_TYPE'},
-		$data->{'CLIENT_NUMBER'},
-		$data->{'ACCOUNT_NUMBER'},
-		$data->{'SUBACCOUNT_NUMBER'},
-	);
+    my ($data) = @_;
+    return join q{,}, (
+        $data->{'CLIENT_TYPE'},
+        $data->{'CLIENT_NUMBER'},
+        $data->{'ACCOUNT_NUMBER'},
+        $data->{'SUBACCOUNT_NUMBER'},
+    );
 }
 
 sub _get_product_information
 {
-	my ($data) = @_;
-	return join q{,}, (
-		$data->{'EXCHANGE_CODE'},
-		$data->{'PRODUCT_GROUP_CODE'},
-		$data->{'SYMBOL'},
-		$data->{'EXPIRATION_DATE'},
-	);	
+    my ($data) = @_;
+    return join q{,}, (
+        $data->{'EXCHANGE_CODE'},
+        $data->{'PRODUCT_GROUP_CODE'},
+        $data->{'SYMBOL'},
+        $data->{'EXPIRATION_DATE'},
+    );
 }
 
 sub _get_total_transaction_amount
 {
-	my ($data) = @_;
-	print STDERR qq{ _get_total_transaction_amount : } . ($data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0);
-	return $data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0;
+    my ($data) = @_;
+    return $data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0;
 }
 
 # Pass it an array which has hashref of parsed data
 # It will find the unique sets of product and customers, and get its totals
-sub get_summary_data
-{
-	my (@parsed_data) = @_;
-	my %summary_data = ();
-foreach my $parsed_data_element (@parsed_data)
-{
-	my $client_information = _get_client_information($parsed_data_element);
-	my $product_information = _get_product_information($parsed_data_element);
-	my $total = _get_total_transaction_amount($parsed_data_element);
-	if (defined($summary_data{$client_information}->{$product_information}))
-	{
-		#print STDERR qq{ \t--> MUTTLEY - UPDATING the count for client, $client_information and product, $product_information from } . $summary_data{$client_information}->{$product_information} . qq{\n};
-		$summary_data{$client_information}->{$product_information} += $total;
-	}
-	else{
-		#print STDERR qq{ \t--> MUTTLEY -  INITIALISATING the count for client $client_information and product, $product_information  from ZERO with total of ($total) }  . $parsed_data_element->{'QUANTITY_LONG'}  . " , SHORT =". $parsed_data_element->{'QUANTITY_SHORT'}. qq{\n};
-		$summary_data{$client_information}->{$product_information} = $total;
-	}
-}
-return %summary_data;
+sub get_summary_data {
+    my (@parsed_data) = @_;
+    my %summary_data = ();
+    foreach my $parsed_data_element (@parsed_data) {
+        my $client_information
+            = _get_client_information($parsed_data_element);
+        my $product_information
+            = _get_product_information($parsed_data_element);
+        my $total = _get_total_transaction_amount($parsed_data_element);
+        if (defined(
+                $summary_data{$client_information}->{$product_information}
+            )
+            )
+        {
+            $summary_data{$client_information}->{$product_information}
+                += $total;
+        }
+        else {
+            $summary_data{$client_information}->{$product_information}
+                = $total;
+        }
+    }
+    return %summary_data;
 
 }
 
 # Given a file name and a hashref of data, it will generate a csv file
-sub write_csv_report
-{
-	my ($args) = @_;
-	my $file_write_mode = q{w};
+sub write_csv_report {
+    my ($args) = @_;
+    my $file_write_mode = q{w};
 
-	my $fh = IO::File->new($args->{'file'}, $file_write_mode);
-if (defined $fh) {
-	my $data = $args->{'data'};
-    foreach my $customer ( keys %{$data} )
-	{
-		foreach my $product (keys %{$data->{$customer}})
-		{
-			my $data_string = join q{,}, (
-				$customer,
-				$product,
-				$data->{$customer}->{$product},
-				qq{\n}
-			);
-			print $fh $data_string;
-		}
-	}
-    undef $fh;
-}
-else { die qq{Cannot write csv report: $!};
-}
-	return;
+    my $fh = IO::File->new( $args->{'file'}, $file_write_mode );
+    if ( defined $fh ) {
+        my $data = $args->{'data'};
+        foreach my $customer ( keys %{$data} ) {
+            foreach my $product ( keys %{ $data->{$customer} } ) {
+                my $data_string = join q{,},
+                    (
+                    $customer, $product, $data->{$customer}->{$product},
+                    qq{\n}
+                    );
+                print $fh $data_string;
+            }
+        }
+        undef $fh;
+    }
+    else {
+        die qq{Cannot write csv report: $!};
+    }
+    return;
 }
 
 1;

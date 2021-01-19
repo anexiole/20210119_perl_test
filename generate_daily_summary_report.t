@@ -139,31 +139,27 @@ use lib 'lib/';
     );
 }
 {
-	my %summary_data = ();
-	can_ok('REPORT', q{write_csv_report});
-	dies_ok(
-		sub {
-		REPORT::write_csv_report({
-			'data' => \%summary_data,
-		}
-		);
-		},
-		q{write_csv_report dies as expected when no valid file path is given}
-	);
+    my %summary_data = ();
+    can_ok( 'REPORT', q{write_csv_report} );
+    dies_ok(
+        sub {
+            REPORT::write_csv_report( { 'data' => \%summary_data, } );
+        },
+        q{write_csv_report dies as expected when no valid file path is given}
+    );
 
-	lives_ok(
-		sub {
-		REPORT::write_csv_report({
-			'data' => \%summary_data,
-			'file' => q{/tmp/test_output.csv},
-		}
-		);
-		},
-		q{write_csv_report does not exit as expected when a valid file path is given}
-	);
+    lives_ok(
+        sub {
+            REPORT::write_csv_report(
+                {   'data' => \%summary_data,
+                    'file' => q{/tmp/test_output.csv},
+                }
+            );
+        },
+        q{write_csv_report does not exit as expected when a valid file path is given}
+    );
 
-
-	# More comprehensive tests can be written if this was a formal project
+ # More comprehensive tests can be written if I could get more requirements :)
 }
 
 done_testing();
