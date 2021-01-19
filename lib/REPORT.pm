@@ -58,13 +58,10 @@ sub identify_transaction_elements
 	my ($transaction_line) = @_;
 	my @raw_data = split qr{}, $transaction_line, $max_input_characters_per_line;
 
-    # Sanitise the data
-	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{} } @raw_data;
-
-	###print STDERR qq{Raw DATA is } . Dumper(@raw_data);
-
-
-	#my @stuff = @raw_data
+    # Sanitise the data. We don't want trailing spaces at the end of
+    # data. For example, 'SGXDC ' will be 'SGXDC' which is much
+    # neater for reporting/display purposes.
+	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{ } } @raw_data;
 
 	my %data = ();
 	my $index = 0;
@@ -73,23 +70,46 @@ sub identify_transaction_elements
 		ELEMENT_NAME: foreach my $element_name (keys %{$element_config})
 		{
 			my $ending_index = $index + $element_config->{$element_name} - 1;
-#			print qq{index $index\n};
-#			print qq{Ending "$ending_index"\n};
-
 			$data{ $element_name } = join q{}, @raw_data[ $index .. $ending_index];
 
 			$index = $ending_index+1;
 			last ELEMENT_NAME;
 		}
 	}
- 
-	print qq{Result: } . Dumper(\%data);
+
 	return %data;
 }
 
-sub generate_report_contents
-{
+sub _get_client_information{
+	my ($data) = @_;
+	return join q{,}, (
+		$data->{'CLIENT TYPE'},
+		$data->{'CLIENT NUMBER'},
+		$data->{'ACCOUNT NUMBER'},
+		$data->{'SUBACCOUNT NUMBER'},
+	);
+}
 
+sub _get_product_information{
+	my ($data) = @_;
+	return join q{,}, (
+		$data->{''},
+		$data->{'CLIENT NUMBER'},
+		$data->{'ACCOUNT NUMBER'},
+		$data->{'SUBACCOUNT NUMBER'},
+	);
+}
+
+sub generate_report_content_line
+{
+	my ($data) = @_;
+
+	my $client_information = _get_client_information($data);
+	my $product_information
+
+	return (
+
+	);
 }
 
 1;

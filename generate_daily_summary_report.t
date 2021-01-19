@@ -14,7 +14,7 @@ use Test::More;
 	my %elements = REPORT::identify_transaction_elements($transaction_line);
 
 	my %expected_elements = (
-          'TICKET NUMBER' => '0',
+          'TICKET NUMBER' => '0     ',
           'BUY SELL CODE' => 'B',
           'EXTERNAL NUMBER' => '688058',
           'EXCH/BROKER FEE / DEC' => '000000000060',
@@ -23,19 +23,19 @@ use Test::More;
           'CLEARING FEE / DEC' => '000000000030',
           'MOVEMENT CODE' => '01',
           'CURRENCY CODE' => 'JPY',
-          'QUANTITY LONG SIGN' => '',
+          'QUANTITY LONG SIGN' => ' ',
           'COMMISSION' => '000000000010',
-          'EXCHANGE CODE' => 'SGX',
+          'EXCHANGE CODE' => 'SGX ',
           'COMMISSION D C' => 'D',
-          'OPPOSITE TRADER ID' => '',
-          'SYMBOL' => 'NK',
+          'OPPOSITE TRADER ID' => '       ',
+          'SYMBOL' => 'NK    ',
           'COMMISSION CUR CODE' => 'JPY',
           'EXPIRATION DATE' => '20100910',
           'OPEN CLOSE CODE' => 'O',
           'TRANSACTION DATE' => '20100820',
           'EXCH/BROKER FEE DC' => 'D',
           'EXCH/BROKER FEE CUR CODE' => 'USD',
-          'CLIENT TYPE' => 'CL',
+          'CLIENT TYPE' => 'CL  ',
           'QUANTITY LONG' => '0000000001',
           'RECORD CODE' => '315',
           'TRANSACTION PRICE  / DEC' => '000092500000000',
@@ -44,10 +44,10 @@ use Test::More;
           'QUANTITY SHORT' => '0000000000',
           'PRODUCT GROUP CODE' => 'FU',
           'TRADER INITIALS' => 'GORDON',
-          'OPPOSITE PARTY CODE' => 'SGXDC',
+          'OPPOSITE PARTY CODE' => 'SGXDC ',
           'FUTURE REFERENCE' => '001240',
           'CLIENT NUMBER' => '4321',
-          'QUANTITY SHORT SIGN' => ''	
+          'QUANTITY SHORT SIGN' => ' '	
 	);
 
 	is_deeply(
