@@ -6,7 +6,9 @@ use warnings;
 use Readonly;
 use Data::Dumper;
 
-# CONFIGURATIONS
+# CONFIGURATIONS - for this test, I have opted to keep everything in the package
+# but in the real world, some organisations will opt for a yaml config (which
+# can be done easily)
 
 Readonly my $max_input_characters_per_line => 302; 
 
@@ -80,7 +82,8 @@ sub identify_transaction_elements
 	return %data;
 }
 
-sub _get_client_information{
+sub _get_client_information
+{
 	my ($data) = @_;
 	return join q{,}, (
 		$data->{'CLIENT_TYPE'},
@@ -90,9 +93,26 @@ sub _get_client_information{
 	);
 }
 
-sub _get_product_information{
+sub _get_product_information
+{
 	my ($data) = @_;
+	return join q{,}, (
+		$data->{'EXCHANGE_CODE'},
+		$data->{'PRODUCT_GROUP_CODE'},
+		$data->{'SYMBOL'},
+		$data->{'EXPIRATION_DATE'},
+	);	
+}
 
+sub _get_total_transaction_amount
+{
+	my ($data) = @_;
+	return join q{,}, (
+		$data->{'EXCHANGE_CODE'},
+		$data->{'PRODUCT_GROUP_CODE'},
+		$data->{'SYMBOL'},
+		$data->{'EXPIRATION_DATE'},
+	);	
 }
 
 sub generate_report_content_line
@@ -101,9 +121,11 @@ sub generate_report_content_line
 
 	my $client_information = _get_client_information($data);
 	my $product_information = _get_product_information($data);
+	#my $total_transaction_amount = _get_total_transaction_amount($data);
 
-	return (
-
+	return join q{,}, (
+		#$client_information,
+		$product_information,
 	);
 }
 

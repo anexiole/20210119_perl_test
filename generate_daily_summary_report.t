@@ -54,10 +54,11 @@ use Test::More;
 		\%elements,
 		\%expected_elements,
 		q{Elements parsed as expected from raw transaction line}
-	)
-}
-{
-	can_ok('REPORT', q{generate_report_contents});
+	);
+
+	can_ok('REPORT', q{generate_report_content_line});
+	my $r = REPORT::generate_report_content_line(\%elements);
+	print $r;
 }
 
 done_testing();

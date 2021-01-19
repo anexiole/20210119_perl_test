@@ -1,16 +1,37 @@
 #!/usr/bin/perl
-use REPORT;
 
 use strict;
 use warnings;
 use lib 'lib/';
+use REPORT;
 
+use Getopt::Long;
+use IO::File;
+
+my $help = undef;
+my $input_file = undef;
+ 
+      GetOptions (
+                  "input_file=s"   => \$input_file,
+                  "help"  => \$help)
+      or die("Error in command line arguments\n");
+
+unless (defined($input_file))
 {
-	use_ok('REPORT');
+    die qq{No input file supplied to daily summary report generator.\n};
 }
+
+my $fh = IO::File->new($input_file, q{r});
+unless (defined $fh) {
+    die qq{Cannot open file, $input_file: $!};
+}
+
+    while (<$fh>)
 {
-	can_ok('REPORT', q{identify_transaction_elements});
+    print "File" . $_ . "\n";
 }
-{
-	can_ok('REPORT', q{generate_report_contents});
-}
+
+
+    undef $fh;
+
+1;
