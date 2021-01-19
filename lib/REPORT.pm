@@ -61,7 +61,10 @@ sub identify_transaction_elements
     # Sanitise the data
 	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{} } @raw_data;
 
-	#print STDERR qq{Raw DATA is } . Dumper(@raw_data);
+	###print STDERR qq{Raw DATA is } . Dumper(@raw_data);
+
+
+	#my @stuff = @raw_data
 
 	my %data = ();
 	my $index = 0;
@@ -70,34 +73,20 @@ sub identify_transaction_elements
 		ELEMENT_NAME: foreach my $element_name (keys %{$element_config})
 		{
 			my $ending_index = $index + $element_config->{$element_name} - 1;
-			print qq{index $index\n};
-			print qq{Ending "$ending_index"\n};
-			#my @raw_selections = $raw_data[ $index .. $ending_index];
+#			print qq{index $index\n};
+#			print qq{Ending "$ending_index"\n};
 
-			#$data{$element_name} = join q{}, $raw_data[ $index .. $ending_index];
-			######print qq{$element_name -> } . $data{$element_name} . qq{...\n};
-			$data{$element_name} = _get_slices(\@raw_data,$index,$ending_index);
+			$data{ $element_name } = join q{}, @raw_data[ $index .. $ending_index];
+
 			$index = $ending_index+1;
 			last ELEMENT_NAME;
 		}
 	}
  
-	#print qq{Result: } . Dumper(%data);
+	print qq{Result: } . Dumper(\%data);
+	return %data;
 }
 
-# Had to use this as there was an unknown warning to do with using array slices
-# with indices
-sub _get_slices
-{
-	my ($raw_data, $start, $end,) = @_;
-
-	my $content = q{};
-	for (my $i = $start; $i<=$end; $i++)
-	{
-		$content .= $raw_data->[$i];
-	}
-    return $content;
-}
 sub generate_report_contents
 {
 
