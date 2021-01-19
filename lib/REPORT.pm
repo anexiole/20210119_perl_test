@@ -183,8 +183,6 @@ sub write_csv_report {
 
 REPORT
 
-
-
 =head1 DESCRIPTION
 
 Does the heavy lifting of generating a daily summary report for ABN AMRO BANK.
