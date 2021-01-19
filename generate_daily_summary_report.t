@@ -58,101 +58,82 @@ use Test::More;
 }
 
 {
+    can_ok( 'REPORT', q{get_summary_data} );
+    my @parsed_data = (
+        {   'CLIENT_TYPE'        => q{EVO},
+            'CLIENT_NUMBER'      => q{4321},
+            'ACCOUNT_NUMBER'     => q{98},
+            'SUBACCOUNT_NUMBER'  => q{1},
+            'EXCHANGE_CODE'      => q{CME},
+            'PRODUCT_GROUP_CODE' => q{PROD1},
+            'SYMBOL'             => q{M},
+            'EXPIRATION_DATE'    => q{2021Jan18},
+            'QUANTITY_LONG'      => 6111,
+            'QUANTITY_SHORT'     => 8111,
+            'TRADER_INITIALS'    => 'GORDON',
+        },
+        {   'CLIENT_TYPE'        => q{EVO},
+            'CLIENT_NUMBER'      => q{4321},
+            'ACCOUNT_NUMBER'     => q{98},
+            'SUBACCOUNT_NUMBER'  => q{3},
+            'EXCHANGE_CODE'      => q{CME},
+            'PRODUCT_GROUP_CODE' => q{PROD1},
+            'SYMBOL'             => q{M},
+            'EXPIRATION_DATE'    => q{2021Jan18},
+            'QUANTITY_LONG'      => 5777,
+            'QUANTITY_SHORT'     => 8777,
+            'TRADER_INITIALS'    => 'GORDON',
+        },
+        {   'CLIENT_TYPE'        => q{EVO},
+            'CLIENT_NUMBER'      => q{4321},
+            'ACCOUNT_NUMBER'     => q{98},
+            'SUBACCOUNT_NUMBER'  => q{1},
+            'EXCHANGE_CODE'      => q{CME},
+            'PRODUCT_GROUP_CODE' => q{PROD1},
+            'SYMBOL'             => q{M},
+            'EXPIRATION_DATE'    => q{2021Jan18},
+            'QUANTITY_LONG'      => 5222,
+            'QUANTITY_SHORT'     => 8222,
+            'TRADER_INITIALS'    => 'YEONG',
+        },
+        {   'CLIENT_TYPE'        => q{GRIEVO},
+            'CLIENT_NUMBER'      => q{8827},
+            'ACCOUNT_NUMBER'     => q{28},
+            'SUBACCOUNT_NUMBER'  => q{3},
+            'EXCHANGE_CODE'      => q{CME},
+            'PRODUCT_GROUP_CODE' => q{PROD4},
+            'SYMBOL'             => q{M},
+            'EXPIRATION_DATE'    => q{2021Jan18},
+            'QUANTITY_LONG'      => 333,
+            'QUANTITY_SHORT'     => 300,
+            'TRADER_INITIALS'    => 'YEONG',
+        },
+        {   'CLIENT_TYPE'        => q{GRIEVO},
+            'CLIENT_NUMBER'      => q{8827},
+            'ACCOUNT_NUMBER'     => q{28},
+            'SUBACCOUNT_NUMBER'  => q{5},
+            'EXCHANGE_CODE'      => q{CME},
+            'PRODUCT_GROUP_CODE' => q{PROD3},
+            'SYMBOL'             => q{M},
+            'EXPIRATION_DATE'    => q{2021Jan18},
+            'QUANTITY_LONG'      => 932,
+            'QUANTITY_SHORT'     => 100,
+            'TRADER_INITIALS'    => 'YEONG',
+        },
+    );
+    my %summary_data = REPORT::get_summary_data(@parsed_data);
+    my $expected_results = {
+        'EVO,4321,98,3'    => { 'CME,PROD1,M,2021Jan18' => -3000 },
+        'GRIEVO,8827,28,5' => { 'CME,PROD3,M,2021Jan18' => 832 },
+        'EVO,4321,98,1'    => { 'CME,PROD1,M,2021Jan18' => -5000 },
+        'GRIEVO,8827,28,3' => { 'CME,PROD4,M,2021Jan18' => 33 }
+    };
 
-	can_ok('REPORT', q{get_summary_data});
-	my @parsed_data = (
-		{
-	'CLIENT_TYPE'=> q{EVO},
-'CLIENT_NUMBER'=> q{4321},
-'ACCOUNT_NUMBER'=> q{98},
-'SUBACCOUNT_NUMBER'=> q{1},
-'EXCHANGE_CODE'=> q{CME},
-'PRODUCT_GROUP_CODE'=> q{PROD1},
-'SYMBOL'=> q{M},
-'EXPIRATION_DATE'=> q{2021Jan18},
-'QUANTITY_LONG' =>  6111,
-'QUANTITY_SHORT' =>  8111,
-          'TRADER_INITIALS' => 'GORDON',
-		},
-		{
-	'CLIENT_TYPE'=> q{EVO},
-'CLIENT_NUMBER'=> q{4321},
-'ACCOUNT_NUMBER'=> q{98},
-'SUBACCOUNT_NUMBER'=> q{3},
-'EXCHANGE_CODE'=> q{CME},
-'PRODUCT_GROUP_CODE'=> q{PROD1},
-'SYMBOL'=> q{M},
-'EXPIRATION_DATE'=> q{2021Jan18},
-'QUANTITY_LONG' =>  5777,
-'QUANTITY_SHORT' => 8777,
-          'TRADER_INITIALS' => 'GORDON',
-		},
-		{
-	'CLIENT_TYPE'=> q{EVO},
-'CLIENT_NUMBER'=> q{4321},
-'ACCOUNT_NUMBER'=> q{98},
-'SUBACCOUNT_NUMBER'=> q{1},
-'EXCHANGE_CODE'=> q{CME},
-'PRODUCT_GROUP_CODE'=> q{PROD1},
-'SYMBOL'=> q{M},
-'EXPIRATION_DATE'=> q{2021Jan18},
-'QUANTITY_LONG' =>  5222,
-'QUANTITY_SHORT' => 8222,
-          'TRADER_INITIALS' => 'YEONG',
-		},
-		{
-	'CLIENT_TYPE'=> q{GRIEVO},
-'CLIENT_NUMBER'=> q{8827},
-'ACCOUNT_NUMBER'=> q{28},
-'SUBACCOUNT_NUMBER'=> q{3},
-'EXCHANGE_CODE'=> q{CME},
-'PRODUCT_GROUP_CODE'=> q{PROD4},
-'SYMBOL'=> q{M},
-'EXPIRATION_DATE'=> q{2021Jan18},
-'QUANTITY_LONG' =>  333,
-'QUANTITY_SHORT' => 300,
-          'TRADER_INITIALS' => 'YEONG',
-		},
-		{
-	'CLIENT_TYPE'=> q{GRIEVO},
-'CLIENT_NUMBER'=> q{8827},
-'ACCOUNT_NUMBER'=> q{28},
-'SUBACCOUNT_NUMBER'=> q{5},
-'EXCHANGE_CODE'=> q{CME},
-'PRODUCT_GROUP_CODE'=> q{PROD3},
-'SYMBOL'=> q{M},
-'EXPIRATION_DATE'=> q{2021Jan18},
-'QUANTITY_LONG' =>  932,
-'QUANTITY_SHORT' => 100,
-          'TRADER_INITIALS' => 'YEONG',
-		},
-	);
-	my %summary_data = REPORT::get_summary_data(@parsed_data);
-use Data::Dumper;
-	print STDERR qq{Eleements }. Dumper(\%summary_data);
-	my $expected_results =
-	{
-          'EVO,4321,98,3' => {
-                               'CME,PROD1,M,2021Jan18' => -3000
-                             },
-          'GRIEVO,8827,28,5' => {
-                                  'CME,PROD3,M,2021Jan18' => 832
-                                },
-          'EVO,4321,98,1' => {
-                               'CME,PROD1,M,2021Jan18' => -5000
-                             },
-          'GRIEVO,8827,28,3' => {
-                                  'CME,PROD4,M,2021Jan18' => 33
-                                }
-        };
-
-	is_deeply(
-		$expected_results,
-		\%summary_data,
-		q{  Unique product and customer sets identified with correct net totals}
-
-	);
-
+    is_deeply(
+        $expected_results,
+        \%summary_data,
+        q{  Unique product and customer sets identified with correct net totals}
+    );
 }
 {
 	can_ok('REPORT', q{generate_csv_report});

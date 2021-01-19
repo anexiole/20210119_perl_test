@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Readonly;
+use IO::File;
 use Data::Dumper;
 
 # CONFIGURATIONS - for this test, I have opted to keep everything in the package
@@ -121,29 +122,6 @@ sub _get_total_transaction_amount
 	return $data->{'QUANTITY_LONG'} - $data->{'QUANTITY_SHORT'} + 0;
 }
 
-sub _update_summary_data
-{
-	my ($args) = @_;
-
-	my $client_information = _get_client_information($args->{'elements'});
-	my $product_information = _get_product_information($args->{'elements'});
-
-	my $total = _get_total_transaction_amount($args->{'elements'});
-		print STDERR qq{ CURRENT CLIENT $client_information\nproduct_information:$product_information TOTAL: $total\n};
-	
-	if (defined($args->{'summary'}->{$client_information}->{$product_information}))
-	{
-		print STDERR qq{ \t--> UPDATING the count from } . $args->{'summary'}->{$client_information}->{$product_information} . qq{\n};
-		$args->{'summary'}->{$client_information}->{$product_information} += $total;
-	}
-	else{
-		print STDERR qq{ \t--> INITIALISATING the count from ZERO }  . qq{\n};
-		$args->{'summary'}->{$client_information}->{$product_information} = $total;
-	}
-
-	return;
-}
-
 # Pass it an array which has hashref of parsed data
 # It will find the unique sets of product and customers, and get its totals
 sub get_summary_data
@@ -154,14 +132,14 @@ foreach my $parsed_data_element (@parsed_data)
 {
 	my $client_information = _get_client_information($parsed_data_element);
 	my $product_information = _get_product_information($parsed_data_element);
-my $total = _get_total_transaction_amount($parsed_data_element);
+	my $total = _get_total_transaction_amount($parsed_data_element);
 	if (defined($summary_data{$client_information}->{$product_information}))
 	{
-		print STDERR qq{ \t--> MUTTLEY - UPDATING the count for client, $client_information and product, $product_information from } . $summary_data{$client_information}->{$product_information} . qq{\n};
+		#print STDERR qq{ \t--> MUTTLEY - UPDATING the count for client, $client_information and product, $product_information from } . $summary_data{$client_information}->{$product_information} . qq{\n};
 		$summary_data{$client_information}->{$product_information} += $total;
 	}
 	else{
-		print STDERR qq{ \t--> MUTTLEY -  INITIALISATING the count for client $client_information and product, $product_information  from ZERO with total of ($total) }  . $parsed_data_element->{'QUANTITY_LONG'}  . " , SHORT =". $parsed_data_element->{'QUANTITY_SHORT'}. qq{\n};
+		#print STDERR qq{ \t--> MUTTLEY -  INITIALISATING the count for client $client_information and product, $product_information  from ZERO with total of ($total) }  . $parsed_data_element->{'QUANTITY_LONG'}  . " , SHORT =". $parsed_data_element->{'QUANTITY_SHORT'}. qq{\n};
 		$summary_data{$client_information}->{$product_information} = $total;
 	}
 }
@@ -169,10 +147,29 @@ return %summary_data;
 
 }
 
-#TODO
-sub generate_csv_report
+# Given a file name and a hashref of data, it will generate a csv file
+sub write_csv_report
 {
-
+	my ($file, $data) = @_;
+my $fh = IO::File->new($file, q{w});
+if (defined $fh) {
+    foreach my $customer ( keys %{$data} )
+	{
+		##print $fh $data_line
+		foreach my $product (keys %{$data->{$customer}})
+		{
+			my $data_string = join q{,}, (
+				$customer,
+				$product,
+				$data->{$customer}->{$product},
+				qq{\n}
+			);
+			print STDERR $data_string;
+			print $fh $data_string;
+		}
+	}
+    undef $fh;       # automatically closes the file
+}
 
 }
 
