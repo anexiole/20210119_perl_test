@@ -4,8 +4,29 @@
 APPLICATION:
 ============
 
-To run the application, you can optionally provide a '--input_file' flag. Else, by default it will
-just use a file called Input.csv in its current path.
+
+Configuration:
+    By default, its output file will be a file called Output.csv located in the current directory.
+    To change the name and path of this default output file, head to generate_daily_summary_report.pl
+    and alter the 'output' config element in the hash, %file.
+
+
+Execution:
+    To run the application, you can optionally provide a '--input_file' flag. Else, by default it will
+    just use a file called Input.csv in its current path.
+    
+    PRE: run "chmod 755 generate_daily_summary_report.pl" to set the permissions up
+    
+    
+    To run it:
+    
+     The command is "././generate_daily_summary_report.pl --input_file <input file other than input.csv>"
+    
+    
+Examples:
+
+1. "./generate_daily_summary_report.pl"
+2. "./generate_daily_summary_report.pl --input_file alternative_input.txt"
 
 
 
@@ -14,8 +35,6 @@ TESTS
 =====
 
 run " prove -v t/report.t"
-
-
 
 Example: $ prove -v t/report.t 
 t/report.t .. 
