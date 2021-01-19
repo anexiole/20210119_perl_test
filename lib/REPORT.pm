@@ -59,7 +59,7 @@ sub identify_transaction_elements
 	my @raw_data = split qr{}, $transaction_line, $max_input_characters_per_line;
 
     # Sanitise the data
-	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{} } @raw_data[ 0 .. $max_input_characters_per_line];
+	@raw_data = map { defined $_ and $_ =~ m{\w} ? $_ : q{} } @raw_data;
 
 	print STDERR qq{Raw DATA is } . Dumper(@raw_data);
 
