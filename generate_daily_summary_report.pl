@@ -44,6 +44,7 @@ eval {
     # elements. The identifies the unique sets of client and product
     # information
     my @parsed_data = ();
+    
     while (<$fh>) {
         my %elements = REPORT::identify_transaction_elements($_);
         push @parsed_data, \%elements;
@@ -52,10 +53,11 @@ eval {
 
     my %summary_data = REPORT::get_summary_data(@parsed_data);
 
-    use Data::Dumper;
-    print qq{ Summary is } . Dumper( \%summary_data );
-
-    REPORT::write_csv_report($file{'output'}, \%summary_data);
+    REPORT::write_csv_report({
+        'file' => $file{'output'},
+        'data' => \%summary_data,
+    }
+    );
 };
 if ($@) {
     print STDERR qq{Exception trapped: $@};

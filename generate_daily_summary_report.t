@@ -2,9 +2,11 @@
 
 use strict;
 use warnings;
-use lib 'lib/';
-use Test::More;
 
+use Test::More;
+use Test::Exception;
+
+use lib 'lib/';
 {
 	use_ok('REPORT');
 }
@@ -121,6 +123,7 @@ use Test::More;
             'TRADER_INITIALS'    => 'YEONG',
         },
     );
+
     my %summary_data = REPORT::get_summary_data(@parsed_data);
     my $expected_results = {
         'EVO,4321,98,3'    => { 'CME,PROD1,M,2021Jan18' => -3000 },
@@ -136,7 +139,31 @@ use Test::More;
     );
 }
 {
-	can_ok('REPORT', q{generate_csv_report});
+	my %summary_data = ();
+	can_ok('REPORT', q{write_csv_report});
+	dies_ok(
+		sub {
+		REPORT::write_csv_report({
+			'data' => \%summary_data,
+		}
+		);
+		},
+		q{write_csv_report dies as expected when no valid file path is given}
+	);
+
+	lives_ok(
+		sub {
+		REPORT::write_csv_report({
+			'data' => \%summary_data,
+			'file' => q{/tmp/test_output.csv},
+		}
+		);
+		},
+		q{write_csv_report does not exit as expected when a valid file path is given}
+	);
+
+
+	# More comprehensive tests can be written if this was a formal project
 }
 
 done_testing();

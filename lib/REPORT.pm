@@ -150,12 +150,14 @@ return %summary_data;
 # Given a file name and a hashref of data, it will generate a csv file
 sub write_csv_report
 {
-	my ($file, $data) = @_;
-my $fh = IO::File->new($file, q{w});
+	my ($args) = @_;
+	my $file_write_mode = q{w};
+
+	my $fh = IO::File->new($args->{'file'}, $file_write_mode);
 if (defined $fh) {
+	my $data = $args->{'data'};
     foreach my $customer ( keys %{$data} )
 	{
-		##print $fh $data_line
 		foreach my $product (keys %{$data->{$customer}})
 		{
 			my $data_string = join q{,}, (
@@ -164,13 +166,14 @@ if (defined $fh) {
 				$data->{$customer}->{$product},
 				qq{\n}
 			);
-			print STDERR $data_string;
 			print $fh $data_string;
 		}
 	}
-    undef $fh;       # automatically closes the file
+    undef $fh;
 }
-
+else { die qq{Cannot write csv report: $!};
+}
+	return;
 }
 
 1;
